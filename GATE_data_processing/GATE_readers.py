@@ -111,7 +111,8 @@ def F3_output(fp_output, let_type ='MATERIAL', particles = 'ALL PROTONS'):
 
     return gate_dict
 
-def sobp_output(filepath, let_type = 'WATER'):
+
+def sobp_output(filepath, let_type='WATER', actor_res='SLAB'):
 
     ''' This function converts the .mhd/.raw files from the 3 field GATE simulation into .npy and returns a dict.
 
@@ -130,7 +131,7 @@ def sobp_output(filepath, let_type = 'WATER'):
     else:
         print('ERROR: INCORRECT let_type SET')
 
-    # Dictioanry creation
+    # Dictionary creation
 
     simdict['dose'] = io.imread(filepath + 'total-Dose.mhd', plugin='simpleitk')
 
@@ -142,4 +143,9 @@ def sobp_output(filepath, let_type = 'WATER'):
     simdict['letd'] = clean_let_divide(np.divide(simdict['letd_num'], simdict['letd_den']))
     simdict['lett'] = clean_let_divide(np.divide(simdict['lett_num'], simdict['lett_den']))
 
+    if actor_res =='SLAB':
+        for key, value in simdict.items():
+            simdict[key] = np.ndarray.flatten(simdict[key])
+    else:
+        print('No flattening applied as actor_res=' + print(actor_res))
     return simdict
